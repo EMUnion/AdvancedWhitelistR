@@ -11,12 +11,12 @@
 
 第一次使用，您需要改写配置文件并重载插件，以下是插件的配置项说明：
 
-```json
-config= {
-    "Kick_reason": "你并不在本服务器白名单内，请联系管理员处理。", //踢出原因
-    "Whitelist_player": [], //白名单列表
-    "enable": True, //是否启用离线白名单，注意首字母大写: True/False
-    "Admin": [] //游戏内修改白名单权限所有者列表
+```json5
+{
+    "bot_list": [], //允许使用的bot列表
+    "enable": false, //离线白名单开关（此处不要直接修改，请使用!!awr switch）
+    "bot_list_enable": false, //bot白名单
+    "Admin": [] //管理员名单
 }
 ```
 
@@ -25,12 +25,14 @@ config= {
 您可以在控制台或者游戏内使用`!!awr`或者`!!awr help`来获取插件使用方法，指令如下：
 
 ```
-!!awr (help)                    显示帮助消息
-!!awr status                    离线白名单启用状态查看
-!!awr list                      白名单列表
+!!awr help - 显示帮助消息
+!!awr status - 离线白名单启用状态
+!!awr list §f- 白名单列表
+!!awr botlist - bot白名单列表
 
-// 以下是白名单管理员/控制台指令
-!!awr switch                    开关白名单
-!!awr add <player>              添加白名单
-!!awr remove <player>           删除白名单
+(以下是白名单管理员指令)
+!!awr switch - 开关白名单
+!!awr botswitch - 开关bot白名单
+!!awr add <player> - 添加白名单
+!!awr remove <player> - 删除白名单
 ```

@@ -1,0 +1,11 @@
+{
+    "id": "advanced_whitelist_r",
+    "version": "1.0.1",
+    "name": "AdvancedWhitelistR",
+    "description": "For outline-model Whitelist",
+    "author": "noionion",
+    "link": "https://github.com/2X-ercha/AdvancedWhitelistR",
+    "dependencies": {
+        "mcdreforged": ">=2.1.0"
+    }
+}
