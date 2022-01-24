@@ -47,12 +47,13 @@ def player_add(commandsource, context):
             else:
                 uuid = generate_offline_uuid(context['player'])
                 dict = {"uuid": uuid, "name": context['player']}
-                save_whitelist(whitelist, dict)
-                global_server.execute("whitelist reload")
                 commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
                 if context['player'].startswith('bot_'):
                     config['bot_list'].append(context['player'])
                     save_config(config)
+                else:
+                    save_whitelist(whitelist, dict)
+                    global_server.execute("whitelist reload")
         else:
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b不是管理员，没有操作权限")
     else:
@@ -61,12 +62,13 @@ def player_add(commandsource, context):
         else:
             uuid = generate_offline_uuid(context['player'])
             dict = {"uuid": uuid, "name": context['player']}
-            save_whitelist(whitelist, dict)
-            global_server.execute("whitelist reload")
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
             if context['player'].startswith('bot_'):
                 config['bot_list'].append(context['player'])
                 save_config(config)
+            else:
+                save_whitelist(whitelist, dict)
+                global_server.execute("whitelist reload")
 
 
 def player_remove(commandsource, context):
@@ -78,12 +80,13 @@ def player_remove(commandsource, context):
             if player_in_whitelist(whitelist, context['player']):
                 uuid = generate_offline_uuid(context['player'])
                 dict = {"uuid": uuid, "name": context['player']}
-                save_whitelist(whitelist, dict, remove = True)
-                global_server.execute("whitelist reload")
                 commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
                 if context['player'].startswith('bot_'):
                     config['bot_list'].remove(context['player'])
                     save_config(config)
+                else: 
+                    save_whitelist(whitelist, dict, remove = True)
+                    global_server.execute("whitelist reload")
             else:
                 commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
         else:
@@ -92,12 +95,13 @@ def player_remove(commandsource, context):
         if player_in_whitelist(whitelist, context['player']):
             uuid = generate_offline_uuid(context['player'])
             dict = {"uuid": uuid, "name": context['player']}
-            save_whitelist(whitelist, dict, remove = True)
-            global_server.execute("whitelist reload")
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
             if context['player'].startswith('bot_'):
                 config['bot_list'].remove(context['player'])
                 save_config(config)
+            else:
+                save_whitelist(whitelist, dict, remove = True)
+                global_server.execute("whitelist reload")
         else:
             commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
 
@@ -169,7 +173,7 @@ def status_tell(server):
 
 def aw_list(server):
     whitelist = load_whitelist()
-    namelist = [massage['name'] for massage in whitelist if not massage['name'].startswith('bot_')]
+    namelist = [massage['name'] for massage in whitelist]
     server.reply("§7[§3AWR§f/§aINFO§7] §b白名单玩家列表: " + str(namelist))
 
 

@@ -39,6 +39,7 @@ def on_load(server, prev):
 
 def on_player_joined(server, player, info):
     if config['bot_list_enable'] and player.startswith('bot_'):
-        time.sleep(1)
-        server.execute('kill {}'.format(player))
-        server.broadcast('§7[§3AWR§f/§aINFO§7] {}不在白名单内，如有需要请向管理员说明用途并申请'.format(player))
+        if player not in config['bot_list']:
+            time.sleep(1)
+            server.execute('kill {}'.format(player))
+            server.broadcast('§7[§3AWR§f/§aINFO§7] {}不在白名单内，如有需要请向管理员说明用途并申请'.format(player))
