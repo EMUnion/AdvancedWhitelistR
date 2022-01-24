@@ -1,4 +1,3 @@
-from gevent import config
 from mcdreforged.api.types import ServerInterface
 from advanced_whitelist_r.utils import *
 
