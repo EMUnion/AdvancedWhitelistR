@@ -1,10 +1,11 @@
+from gevent import config
 from mcdreforged.api.types import ServerInterface
 from advanced_whitelist_r.utils import *
 
 
 PLUGIN_METADATA = {
     "id": "advanced_whitelist_r",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "name": "AdvancedWhitelistR",
     "description": "For outline-model Whitelist",
     "author": "noionion",
@@ -28,9 +29,7 @@ help_msg = '''-------- §aAdvancedWhitelistR 高级白名单插件（猹的魔�
 -------- §bCurrent Version: §e{} §r--------
 '''.format(PLUGIN_METADATA['version'])
 
-config = load_config()
 global_server = ServerInterface.get_instance().as_plugin_server_interface()
-whitelist = load_whitelist()
 
 # --------------------------------------------------------------------------
 
@@ -39,8 +38,8 @@ def help_info(server):
         server.reply(line)
 
 def player_add(commandsource, context):
-    global whitelist
-    global config
+    whitelist = load_whitelist()
+    config = load_config()
     global global_server
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
@@ -72,8 +71,8 @@ def player_add(commandsource, context):
 
 
 def player_remove(commandsource, context):
-    global whitelist
-    global config
+    whitelist = load_whitelist()
+    config = load_config()
     global global_server
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
@@ -105,8 +104,8 @@ def player_remove(commandsource, context):
 
 
 def status_switch(commandsource):
-    global whitelist
-    global config
+    whitelist = load_whitelist()
+    config = load_config()
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
             if config['enable']:
@@ -135,8 +134,8 @@ def status_switch(commandsource):
 
 
 def bot_status_switch(commandsource):
-    global whitelist
-    global config
+    whitelist = load_whitelist()
+    config = load_config()
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
             if config['bot_list_enable']:
@@ -161,8 +160,8 @@ def bot_status_switch(commandsource):
 
 
 def status_tell(server):
-    global whitelist
-    global config
+    whitelist = load_whitelist()
+    config = load_config()
     if config['enable']:
         server.reply("§7[§3AWR§f/§aINFO§7] §b离线白名单已开启，玩家不在白名单将无法进入游戏")
     else:
@@ -170,11 +169,11 @@ def status_tell(server):
 
 
 def aw_list(server):
-    global whitelist
+    whitelist = load_whitelist()
     namelist = [massage['name'] for massage in whitelist if not massage['name'].startswith('bot_')]
     server.reply("§7[§3AWR§f/§aINFO§7] §b白名单玩家列表: " + str(namelist))
 
 
 def aw_botlist(server):
-    global config
+    config = load_config()
     server.reply("§7[§3AWR§f/§aINFO§7] §bbot白名单列表: " + str(config['bot_list']))
