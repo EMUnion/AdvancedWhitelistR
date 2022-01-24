@@ -8,7 +8,7 @@ PLUGIN_METADATA = {
     "name": "AdvancedWhitelistR",
     "description": "For outline-model Whitelist",
     "author": "noionion",
-    "link": "https://github.com/2X-ercha/AdvancedWhitelistR",
+    "link": "https://github.com/EMUnion/AdvancedWhitelistR",
     "dependencies": {
         "mcdreforged": ">=2.1.0"
     }
