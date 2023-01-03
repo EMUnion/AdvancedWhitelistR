@@ -1,11 +1,13 @@
 import json
 import hashlib
 from uuid import UUID
+from mcdreforged.api.types import ServerInterface
 
 
 def save_config(config) -> None:
     with open('./config/AdvancedWhitelistR.json', 'w', encoding="utf-8") as f:
-        f.write(json.dumps(config, indent=2, separators=(',', ':'), ensure_ascii=False))
+        f.write(json.dumps(config, indent=2, separators=(
+            ',', ':'), ensure_ascii=False))
 
 
 def load_config() -> dict:
@@ -14,13 +16,15 @@ def load_config() -> dict:
     return config
 
 
-def save_whitelist(whitelist, dict, remove=False) -> None:
+def save_whitelist(whitelist, dict, remove=False, server: ServerInterface | None = None) -> None:
     if not remove:
         whitelist.append(dict)
+        with open('./server/whitelist.json', 'w', encoding="utf-8") as f:
+            f.write(json.dumps(whitelist, indent=2,
+                    separators=(',', ':'), ensure_ascii=False))
     else:
+        server.execute(f'whitelist remove {dict["name"]}')
         whitelist.remove(dict)
-    with open('./server/whitelist.json', 'w', encoding="utf-8") as f:
-        f.write(json.dumps(whitelist, indent=2, separators=(',', ':'), ensure_ascii=False))
 
 
 def load_whitelist() -> list:

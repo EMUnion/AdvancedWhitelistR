@@ -4,10 +4,10 @@ from advanced_whitelist_r.utils import *
 
 PLUGIN_METADATA = {
     "id": "advanced_whitelist_r",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "name": "AdvancedWhitelistR",
     "description": "For outline-model Whitelist",
-    "author": "noionion",
+    "author": ["noionion", "GamerNoTitle"],
     "link": "https://github.com/EMUnion/AdvancedWhitelistR",
     "dependencies": {
         "mcdreforged": ">=2.1.0"
@@ -32,9 +32,11 @@ global_server = ServerInterface.get_instance().as_plugin_server_interface()
 
 # --------------------------------------------------------------------------
 
+
 def help_info(server):
     for line in help_msg.splitlines():
         server.reply(line)
+
 
 def player_add(commandsource, context):
     whitelist = load_whitelist()
@@ -47,12 +49,13 @@ def player_add(commandsource, context):
             else:
                 uuid = generate_offline_uuid(context['player'])
                 dict = {"uuid": uuid, "name": context['player']}
-                commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
+                commandsource.reply(
+                    "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
                 if context['player'].startswith('bot_'):
                     config['bot_list'].append(context['player'])
                     save_config(config)
                 else:
-                    save_whitelist(whitelist, dict)
+                    save_whitelist(whitelist, dict, server=global_server)
                     global_server.execute("whitelist reload")
         else:
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b不是管理员，没有操作权限")
@@ -62,7 +65,8 @@ def player_add(commandsource, context):
         else:
             uuid = generate_offline_uuid(context['player'])
             dict = {"uuid": uuid, "name": context['player']}
-            commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
+            commandsource.reply(
+                "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已加入白名单".format(context['player']))
             if context['player'].startswith('bot_'):
                 config['bot_list'].append(context['player'])
                 save_config(config)
@@ -77,30 +81,38 @@ def player_remove(commandsource, context):
     global global_server
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
-            if player_in_whitelist(whitelist, context['player']):
-                uuid = generate_offline_uuid(context['player'])
-                dict = {"uuid": uuid, "name": context['player']}
-                commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
-                if context['player'].startswith('bot_'):
-                    config['bot_list'].remove(context['player'])
-                    save_config(config)
-                else: 
-                    save_whitelist(whitelist, dict, remove = True)
-                    global_server.execute("whitelist reload")
+            if context['player'].startswith('bot_'):
+                config['bot_list'].remove(context['player'])
+                save_config(config)
             else:
-                commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
+                if player_in_whitelist(whitelist, context['player']):
+                    uuid = generate_offline_uuid(context['player'])
+                    dict = {"uuid": uuid, "name": context['player']}
+                    commandsource.reply(
+                        "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
+                    # if context['player'].startswith('bot_'):
+                    #     config['bot_list'].remove(context['player'])
+                    #     save_config(config)
+                    # else:
+                    save_whitelist(whitelist, dict, remove=True,
+                                   server=global_server)
+                    global_server.execute("whitelist reload")
+                else:
+                    commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
         else:
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b不是管理员，没有操作权限")
     else:
         if player_in_whitelist(whitelist, context['player']):
             uuid = generate_offline_uuid(context['player'])
             dict = {"uuid": uuid, "name": context['player']}
-            commandsource.reply("§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
+            commandsource.reply(
+                "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
             if context['player'].startswith('bot_'):
                 config['bot_list'].remove(context['player'])
                 save_config(config)
             else:
-                save_whitelist(whitelist, dict, remove = True)
+                save_whitelist(whitelist, dict, remove=True,
+                               server=global_server)
                 global_server.execute("whitelist reload")
         else:
             commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
@@ -114,12 +126,14 @@ def status_switch(commandsource):
             if config['enable']:
                 config['enable'] = False
                 global_server.execute("whitelist off")
-                commandsource.reply("§7[§3AWR§f/§aINFO§7] §b离线白名单已关闭，所有玩家均可进入游戏")
+                commandsource.reply(
+                    "§7[§3AWR§f/§aINFO§7] §b离线白名单已关闭，所有玩家均可进入游戏")
                 save_config(config)
             else:
                 config['enable'] = True
                 global_server.execute("whitelist on")
-                commandsource.reply("§7[§3AWR§f/§aINFO§7] §b离线白名单已开启，玩家不在白名单将无法进入游戏")
+                commandsource.reply(
+                    "§7[§3AWR§f/§aINFO§7] §b离线白名单已开启，玩家不在白名单将无法进入游戏")
                 save_config(config)
         else:
             commandsource.reply("§7[§3AWR§f/§aINFO§7] §b不是管理员，没有操作权限")
@@ -132,7 +146,8 @@ def status_switch(commandsource):
         else:
             config['enable'] = True
             global_server.execute("whitelist on")
-            commandsource.reply("§7[§3AWR§f/§aINFO§7] §b离线白名单已开启，玩家不在白名单将无法进入游戏")
+            commandsource.reply(
+                "§7[§3AWR§f/§aINFO§7] §b离线白名单已开启，玩家不在白名单将无法进入游戏")
             save_config(config)
 
 
