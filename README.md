@@ -35,4 +35,6 @@
 !!awr botswitch - 开关bot白名单
 !!awr add <player> - 添加白名单
 !!awr remove <player> - 删除白名单
+!!awr badd <player> - 添加bot_<player>白名单
+!!awr brm <player> - 删除bot_<player>白名单
 ```

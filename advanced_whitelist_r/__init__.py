@@ -30,6 +30,8 @@ def on_load(server, prev):
     server.register_command(Literal('!!awr').runs(help_info)
                             .then(Literal('add').then(Text('player').runs(player_add)))
                             .then(Literal('remove').then(Text('player').runs(player_remove)))
+                            .then(Literal('badd').then(Text('player').runs(bot_add)))
+                            .then(Literal('brm').then(Text('player').runs(bot_remove)))
                             .then(Literal('switch').runs(status_switch))
                             .then(Literal('status').runs(status_tell))
                             .then(Literal('list').runs(aw_list))
@@ -40,9 +42,12 @@ def on_load(server, prev):
 
 def on_player_joined(server, player, info):
     whitelist = load_whitelist()
+    config = load_config()
     if config['bot_list_enable'] and player.startswith('bot_'):
         if player not in config['bot_list']:
             time.sleep(1)
             server.execute('kill {}'.format(player))
             server.broadcast(
                 '§7[§3AWR§f/§aINFO§7] {}不在白名单内，如有需要请向管理员说明用途并申请'.format(player))
+    if player_in_whitelist(whitelist, info['player']):
+        pass

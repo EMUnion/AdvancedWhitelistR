@@ -20,11 +20,12 @@ def save_whitelist(whitelist, dict, remove=False, server: ServerInterface | None
     if not remove:
         whitelist.append(dict)
         with open('./server/whitelist.json', 'w', encoding="utf-8") as f:
-            f.write(json.dumps(whitelist, indent=2,
-                    separators=(',', ':'), ensure_ascii=False))
+            f.write(json.dumps(whitelist, indent=2, separators=(',', ':'), ensure_ascii=False))    
     else:
         server.execute(f'whitelist remove {dict["name"]}')
         whitelist.remove(dict)
+    # with open('./server/whitelist.json', 'w', encoding="utf-8") as f:
+    #     f.write(json.dumps(whitelist, indent=2, separators=(',', ':'), ensure_ascii=False))
 
 
 def load_whitelist() -> list:

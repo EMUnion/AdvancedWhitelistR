@@ -25,6 +25,9 @@ help_msg = '''-------- §aAdvancedWhitelistR 高级白名单插件（猹的魔�
 §b!!awr botswitch §f- §c开关bot白名单
 §b!!awr add <player> §f- §c添加白名单
 §b!!awr remove <player> §f- §c删除白名单
+§a(以下是添加Bot白名单指令, 请去掉bot_前缀)
+§b!!awr badd <player> §f- §c添加bot_<player>白名单
+§b!!awr brm <player> §f- §c删除bot_<player>白名单
 -------- §bCurrent Version: §e{} §r--------
 '''.format(PLUGIN_METADATA['version'])
 
@@ -36,6 +39,12 @@ global_server = ServerInterface.get_instance().as_plugin_server_interface()
 def help_info(server):
     for line in help_msg.splitlines():
         server.reply(line)
+
+
+def bot_add(commandsource, context):
+    if commandsource.is_player:
+        context['player'] = 'bot_' + context['player']
+        player_add(commandsource, context)
 
 
 def player_add(commandsource, context):
@@ -75,6 +84,12 @@ def player_add(commandsource, context):
                 global_server.execute("whitelist reload")
 
 
+def bot_remove(commandsource, context):
+    if commandsource.is_player:
+        context['player'] = 'bot_' + context['player']
+        player_remove(commandsource, context)
+
+
 def player_remove(commandsource, context):
     whitelist = load_whitelist()
     config = load_config()
@@ -82,8 +97,13 @@ def player_remove(commandsource, context):
     if commandsource.is_player:
         if commandsource.player in config['Admin']:
             if context['player'].startswith('bot_'):
-                config['bot_list'].remove(context['player'])
-                save_config(config)
+                if context['player'] in config['bot_list']:
+                    config['bot_list'].remove(context['player'])
+                    save_config(config)
+                    commandsource.reply(
+                    "§7[§3AWR§f/§aINFO§7] §b假人 §e{} §b已从白名单移除".format(context['player']))
+                else:
+                    commandsource.reply("§7[§3AWR§f/§cWARN§7] §b假人 §e{} §b不在白名单内".format(context['player']))
             else:
                 if player_in_whitelist(whitelist, context['player']):
                     uuid = generate_offline_uuid(context['player'])
@@ -105,14 +125,19 @@ def player_remove(commandsource, context):
         if player_in_whitelist(whitelist, context['player']):
             uuid = generate_offline_uuid(context['player'])
             dict = {"uuid": uuid, "name": context['player']}
-            commandsource.reply(
-                "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
             if context['player'].startswith('bot_'):
-                config['bot_list'].remove(context['player'])
-                save_config(config)
+                if context['player'] in config['bot_list']:
+                    config['bot_list'].remove(context['player'])
+                    commandsource.reply(
+                    "§7[§3AWR§f/§aINFO§7] §b假人 §e{} §b已从白名单移除".format(context['player']))
+                    save_config(config)
+                else:
+                    commandsource.reply("§7[§3AWR§f/§cWARN§7] §b假人 §e{} §b不在白名单内".format(context['player']))
             else:
                 save_whitelist(whitelist, dict, remove=True,
                                server=global_server)
+                commandsource.reply(
+                "§7[§3AWR§f/§aINFO§7] §b玩家 §e{} §b已从白名单移除".format(context['player']))
                 global_server.execute("whitelist reload")
         else:
             commandsource.reply("§7[§3AWR§f/§cWARN§7] §b玩家本就不在白名单内")
